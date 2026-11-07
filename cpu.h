@@ -1,7 +1,8 @@
 /* The purpose of this header file is to give us some kind of idea as to what our emulator is going to do. Very briefly I want to 
 explain that this emulator's purpose is to emulate the hardware base that the NES traditionally runs on. We obviously do not have 
 the NTSC Ricoh 2A03 CPU that the NES traditionally uses. Here we are defining what the CPU registers are and how we should operate on them. */
-
+#ifndef CPU_H
+#define CPU_H
 #include <stdint.h>
 
 typedef struct {
@@ -21,3 +22,5 @@ void STX(cpuRegisters* cpu, uint16_t address); // Stores value of X in the memor
 
 void LDY(cpuRegisters* cpu, uint8_t value); // Loads memory value into Y
 void STY(cpuRegisters* cpu, uint16_t address); // Stores value of Y into the memory address
+
+#endif
