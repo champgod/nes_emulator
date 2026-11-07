@@ -12,3 +12,12 @@ typedef struct {
     uint8_t S; // where cpu offset is from 0x0100 (our stack is 256 bytes)
     uint8_t P; // flagging cpu state
 } cpuRegisters;
+
+void LDA(cpuRegisters* cpu, uint8_t value); // Loads memory value into A
+void STA(cpuRegisters* cpu, uint16_t address); // Stores value of A in the memory address
+
+void LDX(cpuRegisters* cpu, uint8_t value); // Loads memory value into X
+void STX(cpuRegisters* cpu, uint16_t address); // Stores value of X in the memory address
+
+void LDY(cpuRegisters* cpu, uint8_t value); // Loads memory value into Y
+void STY(cpuRegisters* cpu, uint16_t address); // Stores value of Y into the memory address
