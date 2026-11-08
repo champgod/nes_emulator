@@ -31,8 +31,8 @@ void TXA(cpuRegisters* cpu); // Transfer X to A
 void TAY(cpuRegisters* cpu); // Transfer A to Y
 void TYA(cpuRegisters* cpu); // Transfer Y to A
 
-void ADC(cpuRegisters* cpu, uint8_t value, Memory* memory); // Adds with carry  - A = A + memory value + C
-void SBC(cpuRegisters* cpu, uint8_t value, Memory* memory); // Subtracts with carry A = A - memory value - ~C
+void ADC(cpuRegisters* cpu, uint8_t value); // Adds with carry  - A = A + memory value + C
+void SBC(cpuRegisters* cpu, uint8_t value); // Subtracts with carry A = A - memory value - ~C
 void INC(cpuRegisters* cpu);
 void DEC(cpuRegisters* cpu);
 void INX(cpuRegisters* cpu);

@@ -74,7 +74,7 @@ void TYA(cpuRegisters* cpu){
     updateZN(cpu, cpu->A);
 }
 
-void ADC(cpuRegisters* cpu, uint8_t value, Memory* memory){
+void ADC(cpuRegisters* cpu, uint8_t value){
     // Adds with carry: A = A + value + C
     /* There are 4 flags to updated from our P register here, the zero flag (Z), the negative flag (N), the carry flag (C), and the overflow flag (V). 
        We need to note that with 8 bit integers our upper bound is 255 and our lower bound is 0. If we were to add 250 + 10, what 
@@ -94,15 +94,24 @@ void ADC(cpuRegisters* cpu, uint8_t value, Memory* memory){
     }else{
         cpu->P &= ~(1 << 0); // We create a flipped version of 0000001 to 1111110 and use bitwise AND with our cpu->P to set carry flag to 0
     }
-
-    result = result % 256; // Sets the result to the modulus 
-
-    if (result < 128){
-        
-    }
     
+    result = result % 256; // Sets the result to the modulus
+    
+    int signA = (cpu->A & (1 << 7)) != 0; // The signed value of A is true if there's 1 at bit 7 else false
+    int signValue = (value & (1 << 7)) != 0; // The signed value of value is true if there's 1 at bit 7 else false
+    int signResult = (result & (1 << 7)) != 0; // The signed result is true if there's 1 at bit 7 else false
 
+    if (signA == signValue && signA != signResult) { // Checks if sign A equals sign value and sign A doesnt equal sign result
+        cpu->P |= (1 << 6);   // Set V to 1
+    } else {
+        cpu->P &= ~(1 << 6);  // Clear V to 0
+    }
+
+    cpu->A = (uint8_t) result;
+    updateZN(cpu, cpu->A);
 }
+
+
 void SBC(cpuRegisters* cpu, uint8_t value, Memory* memory){
     
 }
