@@ -4,16 +4,13 @@
 
 int main(void) {
     cpuRegisters cpu = {0};
-
-
-    printf("A: %u\n", (unsigned)cpu.A);
-    printf("P: %u\n", (unsigned)cpu.P);
-
     Memory mem = {0};
 
     LDA(&cpu, 20);
     STA(&cpu, 255, &mem);
 
-    printf("Memory at 255: %u\n", readMemory(&mem, 255));
+    SBC(&cpu, 240);
+
+    printf("A: %u\n", (unsigned)cpu.A);
     return 0;
 }
