@@ -112,6 +112,7 @@ void ADC(cpuRegisters* cpu, uint8_t value){
 }
 
 
-void SBC(cpuRegisters* cpu, uint8_t value, Memory* memory){
-    
+void SBC(cpuRegisters* cpu, uint8_t value){
+    // Really lazy implementation but wew're basically just flipping everything in value and calling ADC upon the cpu and flipped value
+    ADC(cpu, ~value);
 }
