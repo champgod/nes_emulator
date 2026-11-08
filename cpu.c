@@ -33,16 +33,16 @@ void LDA(cpuRegisters* cpu, uint8_t value){
     updateZN(cpu, value);
 }
 
-void STA(cpuRegisters* cpu, uint16_t address){
-    //address = cpu->A; // no memory system yet
+void STA(cpuRegisters* cpu, uint16_t address, Memory* memory){
+    writeMemory(memory, address, cpu->A);
 }
 
 void LDX(cpuRegisters* cpu, uint8_t value){
     cpu->X = value;
     updateZN(cpu, value);
 }
-void STX(cpuRegisters* cpu, uint16_t address){
-    //address = cpu->X;
+void STX(cpuRegisters* cpu, uint16_t address, Memory* memory){
+    writeMemory(memory, address, cpu->X);
 }
 
 void LDY(cpuRegisters* cpu, uint8_t value){
@@ -50,6 +50,26 @@ void LDY(cpuRegisters* cpu, uint8_t value){
     updateZN(cpu, value);
 }
 
-void STY(cpuRegisters* cpu, uint16_t address){
-   // address = cpu->Y;
+void STY(cpuRegisters* cpu, uint16_t address, Memory* memory){
+   writeMemory(memory, address, cpu->Y);
+}
+
+void TAX(cpuRegisters* cpu){
+    cpu->X = cpu->A;
+    updateZN(cpu, cpu->X);
+}
+
+void TXA(cpuRegisters* cpu){
+    cpu->A = cpu->X;
+    updateZN(cpu, cpu->A);
+}
+
+void TAY(cpuRegisters* cpu){
+    cpu->Y = cpu->A;
+    updateZN(cpu, cpu->Y);
+}
+
+void TYA(cpuRegisters* cpu){
+    cpu->A = cpu->Y;
+    updateZN(cpu, cpu->A);
 }

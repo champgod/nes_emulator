@@ -3,7 +3,9 @@ explain that this emulator's purpose is to emulate the hardware base that the NE
 the NTSC Ricoh 2A03 CPU that the NES traditionally uses. Here we are defining what the CPU registers are and how we should operate on them. */
 #ifndef CPU_H
 #define CPU_H
+
 #include <stdint.h>
+#include "memory.h"
 
 typedef struct {
     uint8_t A; // the accumulator and basically helps with arithmetic/logic operations across the cpu
@@ -15,12 +17,18 @@ typedef struct {
 } cpuRegisters;
 
 void LDA(cpuRegisters* cpu, uint8_t value); // Loads memory value into A
-void STA(cpuRegisters* cpu, uint16_t address); // Stores value of A in the memory address
+void STA(cpuRegisters* cpu, uint16_t address, Memory* memory); // Stores value of A in the memory address
 
 void LDX(cpuRegisters* cpu, uint8_t value); // Loads memory value into X
-void STX(cpuRegisters* cpu, uint16_t address); // Stores value of X in the memory address
+void STX(cpuRegisters* cpu, uint16_t address, Memory* memory); // Stores value of X in the memory address
 
 void LDY(cpuRegisters* cpu, uint8_t value); // Loads memory value into Y
-void STY(cpuRegisters* cpu, uint16_t address); // Stores value of Y into the memory address
+void STY(cpuRegisters* cpu, uint16_t address, Memory* memory); // Stores value of Y into the memory address
+
+void TAX(cpuRegisters* cpu); // Transfer A to X
+void TXA(cpuRegisters* cpu); // Transfer X to A
+void TAY(cpuRegisters* cpu); // Transfer A to Y
+void TYA(cpuRegisters* cpu); // Transfer Y to A
+
 
 #endif
