@@ -75,8 +75,34 @@ void TYA(cpuRegisters* cpu){
 }
 
 void ADC(cpuRegisters* cpu, uint8_t value, Memory* memory){
+    // Adds with carry: A = A + value + C
+    /* There are 4 flags to updated from our P register here, the zero flag (Z), the negative flag (N), the carry flag (C), and the overflow flag (V). 
+       We need to note that with 8 bit integers our upper bound is 255 and our lower bound is 0. If we were to add 250 + 10, what 
+       would happen? We notice that it exceeds the upper bound 255 and that 260 cannot be stored as an 8 bit value. What we do 
+       is have our A wrap back around. So we add 5 onto 250 get 255 and then 0, 1, 2, 3, and land on 4. How would this look in terms of
+       our flags? We update our carry flag to 1 since we exceeded 255, our zero flag is set to 1 if our add with carry results in a 0 value.
+       Our negative flag is set to whatever the 7th bit position of our result is. Finally our overflow flag is set to 1 if our result is not within
+       -128 and 127. If we had 127 + 1 = 128. Notice that we're not exceeding 255, so our C = 0 BUT our V is 1 because it's out of bounds! */
+
+    // In order we'd want to first compute the add value.
     
+    uint8_t carry = cpu->P & (1 << 0); // Sets our carry to 0 if bit 0 is 0 otherwise 1
+    uint16_t result = cpu->A + value + carry; // We use 16 bit integer here so we can evaluate our bounds and set accordingly
+
+    if (result >= 256){ // Is our result greater than or equal to 256?
+        cpu->P |= (1 << 0); // Set the carry flag to 1
+    }else{
+        cpu->P &= ~(1 << 0); // We create a flipped version of 0000001 to 1111110 and use bitwise AND with our cpu->P to set carry flag to 0
+    }
+
+    result = result % 256; // Sets the result to the modulus 
+
+    if (result < 128){
+        
+    }
+    
+
 }
 void SBC(cpuRegisters* cpu, uint8_t value, Memory* memory){
     
-} // Subtracts with carry A = A - memory value - ~C
+}
