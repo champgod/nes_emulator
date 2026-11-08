@@ -111,8 +111,35 @@ void ADC(cpuRegisters* cpu, uint8_t value){
     updateZN(cpu, cpu->A);
 }
 
-
 void SBC(cpuRegisters* cpu, uint8_t value){
     // Really lazy implementation but wew're basically just flipping everything in value and calling ADC upon the cpu and flipped value
     ADC(cpu, ~value);
+}
+
+void INC(cpuRegisters* cpu, Memory* memory, uint16_t address){
+    uint8_t value = readMemory(memory, address) + 1;
+    writeMemory(memory, address, value);
+    updateZN(cpu, value);
+} 
+void DEC(cpuRegisters* cpu, Memory* memory, uint16_t address){
+    uint8_t value = readMemory(memory, address) - 1;
+    writeMemory(memory, address, value);
+    updateZN(cpu, value);
+} 
+
+void INX(cpuRegisters* cpu){
+    cpu->X++;
+    updateZN(cpu, cpu->X);
+}
+void DEX(cpuRegisters* cpu){
+    cpu->X--;
+    updateZN(cpu, cpu->X);
+}
+void INY(cpuRegisters* cpu){
+    cpu->Y++;
+    updateZN(cpu, cpu->Y);
+}
+void DEY(cpuRegisters* cpu){
+    cpu->Y--;
+    updateZN(cpu, cpu->Y);
 }
