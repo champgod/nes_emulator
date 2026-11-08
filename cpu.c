@@ -73,3 +73,10 @@ void TYA(cpuRegisters* cpu){
     cpu->A = cpu->Y;
     updateZN(cpu, cpu->A);
 }
+
+void ADC(cpuRegisters* cpu, uint8_t value, Memory* memory){
+    
+}
+void SBC(cpuRegisters* cpu, uint8_t value, Memory* memory){
+    
+} // Subtracts with carry A = A - memory value - ~C

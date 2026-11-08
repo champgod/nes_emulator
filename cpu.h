@@ -16,6 +16,7 @@ typedef struct {
     uint8_t P; // flagging cpu state
 } cpuRegisters;
 
+
 void LDA(cpuRegisters* cpu, uint8_t value); // Loads memory value into A
 void STA(cpuRegisters* cpu, uint16_t address, Memory* memory); // Stores value of A in the memory address
 
@@ -30,5 +31,13 @@ void TXA(cpuRegisters* cpu); // Transfer X to A
 void TAY(cpuRegisters* cpu); // Transfer A to Y
 void TYA(cpuRegisters* cpu); // Transfer Y to A
 
+void ADC(cpuRegisters* cpu, uint8_t value, Memory* memory); // Adds with carry  - A = A + memory value + C
+void SBC(cpuRegisters* cpu, uint8_t value, Memory* memory); // Subtracts with carry A = A - memory value - ~C
+void INC(cpuRegisters* cpu);
+void DEC(cpuRegisters* cpu);
+void INX(cpuRegisters* cpu);
+void DEX(cpuRegisters* cpu);
+void INY(cpuRegisters* cpu);
+void DEY(cpuRegisters* cpu);
 
 #endif
