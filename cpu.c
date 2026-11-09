@@ -112,7 +112,7 @@ void ADC(cpuRegisters* cpu, uint8_t value){
 }
 
 void SBC(cpuRegisters* cpu, uint8_t value){
-    // Really lazy implementation but wew're basically just flipping everything in value and calling ADC upon the cpu and flipped value
+    // Really lazy implementation but we're basically just flipping everything in value and calling ADC upon the cpu and flipped value
     ADC(cpu, ~value);
 }
 
@@ -142,4 +142,18 @@ void INY(cpuRegisters* cpu){
 void DEY(cpuRegisters* cpu){
     cpu->Y--;
     updateZN(cpu, cpu->Y);
+}
+
+void cpuStep(cpuRegisters* cpu, Memory* memory){
+    uint8_t opcode = readMemory(memory, cpu->PC); // Recall that PC stores the address of the following instruction 
+    switch (opcode){
+        case 0xA9: // LDA IMMEDIATE ADDRESSING
+            uint8_t value = readMemory(memory, cpu->PC++);
+            LDA(cpu, value);
+            break;
+        case 0xA5:
+            break;
+        case:
+            break
+    }
 }
