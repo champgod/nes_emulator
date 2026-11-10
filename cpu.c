@@ -377,6 +377,126 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             DEY(cpu);
             break;
         }
+        case 0x69: { // ADC IMMEDIATE
+            uint8_t value = immediateAddress(cpu, memory);
+            ADC(cpu, value);
+            break;    
+        }
+        case 0x65: { // ADC ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            ADC(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0x75: { // ADC ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            ADC(cpu, readMemory(memory, (uint8_t)(address + cpu->X)));
+            break;
+        }
+        case 0x6D: { // ADC ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            ADC(cpu, readMemory(memory, address));
+            break;    
+        }
+        case 0x7D: { // ADC ABSOLUTE (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            ADC(cpu, readMemory(memory, (uint16_t) (address + cpu->X)));
+            break;
+        }
+        case 0x79: { // ADC ABSOLUTE (Y)
+            uint16_t address = absoluteAddress(cpu, memory);
+            ADC(cpu, readMemory(memory, (uint16_t) (address + cpu->Y)));
+            break;    
+        }
+        case 0x61: { // ADC INDIRECT X
+            uint16_t address = indirectAddressX(cpu, memory);
+            ADC(cpu, readMemory(memory, address));
+            break;    
+        }
+        case 0x71: { // ADC INDIRECT Y
+            uint16_t address = indirectAddressY(cpu, memory);
+            ADC(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xE9: { // SBC IMMEDIATE
+            uint8_t value = immediateAddress(cpu, memory);
+            SBC(cpu, value);
+            break;
+        }
+        case 0xE5: { // SBC ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            SBC(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xF5: { // SBC ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            SBC(cpu, readMemory(memory, (uint8_t)(address + cpu->X)));
+            break;
+        }
+        case 0xED: { // SBC ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            SBC(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xFD: { // SBC ABSOLUTE (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            SBC(cpu, readMemory(memory, (uint16_t) (address + cpu->X)));
+            break;
+        }
+        case 0xF9: { // SBC ABSOLUTE (Y)
+            uint16_t address = absoluteAddress(cpu, memory);
+            SBC(cpu, readMemory(memory, (uint16_t) (address + cpu->Y)));
+            break;
+        }
+        case 0xE1: { // SBC INDIRECT (X)
+            uint16_t address = indirectAddressX(cpu, memory);
+            SBC(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xF1: { // SBC INDIRECT (Y)
+            uint16_t address = indirectAddressY(cpu, memory);
+            SBC(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xE6: { // INC ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            INC(cpu, memory, address);
+            break;
+        }
+        case 0xF6: { // INC ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            INC(cpu, memory, (uint8_t)(address + cpu->X));
+            break;
+        }
+        case 0xEE: { // INC ABSOLUTE 
+            uint16_t address = absoluteAddress(cpu, memory);
+            INC(cpu, memory, address);
+            break;
+        }
+        case 0xFE: { // INC ABSOLUTE (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            INC(cpu, memory, (uint16_t)(address + cpu->X));
+            break;
+        }
+        case 0xC6: { // 
+            uint8_t address = zeroPageAddress(cpu, memory);
+            DEC(cpu, memory, address);
+            break;
+        }
+        case 0xD6: {
+            uint8_t address = zeroPageAddress(cpu, memory);
+            DEC(cpu, memory, (uint8_t)(address + cpu->X));
+            break;
+        }
+        case 0xCE: {
+            uint16_t address = absoluteAddress(cpu, memory);
+            DEC(cpu, memory, address);
+            break;
+        }
+        case 0xDE: {
+            uint16_t address = absoluteAddress(cpu, memory);
+            DEC(cpu, memory, (uint16_t)(address + cpu->X));
+            break;
+        }
         default:
             printf("No existing opcode here");
             break;
