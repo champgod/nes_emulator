@@ -28,6 +28,47 @@ static void updateZN(cpuRegisters* cpu, uint8_t value){
     }
 }
 
+/* IMMEDIATE ADDRESSING METHOD */
+static uint8_t immediateAddress(cpuRegisters* cpu, Memory* memory) {
+    return readMemory(memory, cpu->PC++);
+}
+
+/* ABSOLUTE ADDRESSING METHOD */
+static uint16_t absoluteAddress(cpuRegisters* cpu, Memory* memory) {
+    uint8_t low = readMemory(memory, cpu->PC++);
+    uint8_t high = readMemory(memory, cpu->PC++);
+
+    return ((uint16_t)high << 8) | low;
+}
+
+/* ZERO PAGE ADDRESS METHOD */
+static uint8_t zeroPageAddress(cpuRegisters* cpu, Memory* memory) {
+    return readMemory(memory, cpu->PC++); // this should ideally read the instruction and give us the operand which is an address
+
+}
+/* INDEXED INDIRECT ADDRESS X METHOD */
+static uint16_t indirectAddressX(cpuRegisters* cpu, Memory* memory) {
+    uint8_t pointer = readMemory(memory, cpu->PC++ + cpu->X); // recall that an indirect address will give us yet another address. what then?
+
+    uint8_t low = readMemory(memory, pointer); // we take low as our pointer address (least significant, following endian ordering)
+    uint8_t high = readMemory(memory, (uint8_t) (pointer + 1)); // we take high as the following address
+
+    return ((uint16_t) high << 8) | low; // we combine the two and return them
+}
+
+/* INDIRECT INDEXED ADDRESS Y METHOD */
+static uint16_t indirectAddressY(cpuRegisters* cpu, Memory* memory) {
+    uint8_t pointer = readMemory(memory, cpu->PC++); // recall that an indirect address will give us yet another address. what then?
+
+    uint8_t low = readMemory(memory, pointer); // we take low as our pointer address (least significant, following endian ordering)
+    uint8_t high = readMemory(memory, (uint8_t) (pointer + 1)); // we take high as the following address
+
+    return (((uint16_t) high << 8) | low) + cpu->Y; // we combine the two and return them
+}
+
+/* END OF HELPER FUNCTIONS (what a pain to write but this will be worth it) */
+/*==================================================================*/
+
 /* Instruction calls but written in C */
 
 void LDA(cpuRegisters* cpu, uint8_t value){
@@ -150,25 +191,82 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
     uint8_t opcode = readMemory(memory, cpu->PC++); // Recall that PC stores the address of the following instruction 
     switch (opcode){
         case 0xA9:{ // IMMEDIATE ADDRESSING (means we fetch the value and directly load to A)
-            uint8_t value = readMemory(memory, cpu->PC++);
+            uint8_t value = immediateAddress(cpu, memory);
             LDA(cpu, value);
             break;
         }
         case 0xA5:{ // ZERO ADDRESSING (means we fetch the address, find the value at the address and load to A)
-            uint8_t address = readMemory(memory, cpu->PC++); // this should ideally read the instruction and give us the operand which is an address
+            uint8_t address = zeroPageAddress(cpu, memory); // this should ideally read the instruction and give us the operand which is an address
             LDA(cpu, readMemory(memory, address));
             break;
         }
         case 0xAD:{ // ABSOLUTE ADDRESSING (means we fetch the opcode, then low byte and high byte - combine them and get the actual address for which the value is to be loaded)
-            uint8_t low = readMemory(memory, cpu->PC++);
-            uint8_t high = readMemory(memory, cpu->PC++);
-            uint16_t address = ((uint16_t) high << 8) | low;
-
+            uint16_t address = absoluteAddress(cpu, memory);
             LDA(cpu, readMemory(memory, address));
             break; 
+        }
+        case 0xB5: { // ZERO ADDRESSING (X)
+            uint8_t address = zeroPageAddress(cpu, memory); // this should ideally read the instruction and give us the operand which is an address
+            LDA(cpu, readMemory(memory, (uint8_t)(address + cpu->X))); // we add X to the memory address and load that to A
+            break;
+        }
+        case 0xBD: { // ABSOLUTE ADDRESSING (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            LDA(cpu, readMemory(memory, (uint16_t)(address + cpu->X)));
+            break; 
+        }
+        case 0xB9: { // ABSOLUTE ADDRESSING (Y)
+            uint16_t address = absoluteAddress(cpu, memory);
+            LDA(cpu, readMemory(memory, (uint16_t)(address + cpu->Y)));
+            break; 
+        }
+        case 0xA1: { // INDIRECT ADDRESSING (X) - we read the memory and that gives us yet another address which contains the value we need for A + X
+            uint16_t address = indirectAddressX(cpu, memory); 
+            LDA(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xB1: { // INDIRECT ADDRESSING (Y) - same as X except we add Y after doing the pointer combo
+            uint16_t address = indirectAddressY(cpu, memory);
+            LDA(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xA2: { // LDX - IMMEDIATE
+            uint8_t value = immediateAddress(cpu, memory);
+            LDX(cpu, value);
+            break;
+        }
+        case 0xA6: { // LDX ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            LDX(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xAE: { // LDX ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            LDX(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xB6: { // LDX ZERO PAGE Y
+            uint8_t address = zeroPageAddress(cpu, memory);
+            LDX(cpu, readMemory(memory, (uint8_t) (address + cpu->Y)));
+            break;
+        }
+        case 0xBE: { // LDX ABSOLUTE Y
+            uint16_t address = absoluteAddress(cpu, memory);
+            LDX(cpu, readMemory(memory, (uint16_t)(address + cpu->Y)));
+            break;
         }
         default:
             printf("No existing opcode here");
             break;
     }
 }
+
+/*
+LD X
+Addressing mode 	Opcode 	Bytes 	Cycles
+#Immediate 	$A2 	2 	2
+Zero Page 	$A6 	2 	3
+Zero Page,Y 	$B6 	2 	4
+Absolute 	$AE 	3 	4
+Absolute,Y 	$BE 	3 	4 (5 if page crossed) 
+*/
