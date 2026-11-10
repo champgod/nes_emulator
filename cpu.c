@@ -1,4 +1,6 @@
 #include "cpu.h"
+#include <stdio.h>
+
 
 /*
  * Processor Status Register (P): NV1BDIZC
@@ -166,7 +168,7 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             break; 
         }
         default:
-            printf("No existing opcode here")
+            printf("No existing opcode here");
             break;
     }
 }
