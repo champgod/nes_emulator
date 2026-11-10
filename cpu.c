@@ -477,22 +477,22 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             INC(cpu, memory, (uint16_t)(address + cpu->X));
             break;
         }
-        case 0xC6: { // 
+        case 0xC6: { // DEC ZERO PAGE
             uint8_t address = zeroPageAddress(cpu, memory);
             DEC(cpu, memory, address);
             break;
         }
-        case 0xD6: {
+        case 0xD6: { // DEC ZERO PAGE (X)
             uint8_t address = zeroPageAddress(cpu, memory);
             DEC(cpu, memory, (uint8_t)(address + cpu->X));
             break;
         }
-        case 0xCE: {
+        case 0xCE: { // DEC ABSOLUTE
             uint16_t address = absoluteAddress(cpu, memory);
             DEC(cpu, memory, address);
             break;
         }
-        case 0xDE: {
+        case 0xDE: { // DEC ABSOLUTE (X)
             uint16_t address = absoluteAddress(cpu, memory);
             DEC(cpu, memory, (uint16_t)(address + cpu->X));
             break;

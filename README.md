@@ -2,4 +2,6 @@
 https://www.nesdev.org/wiki/CPU_registers - This resource gives us a good idea of what registers exist for the NES CPU.
 https://www.nesdev.org/wiki/Instruction_reference#ADC - This resource is particularly great for understanding what each of these instructions do and how they work with registers.
 
-The end goal of this emulator is to get the original Legend of Zelda game from 1986 running on this emulator. By that point I will have learned a boatload about how emulator development works as well. It's been quite fascinating so far and I hope to keep up with this. I'm going to get the NTSC NES (runs on 60 fps) emulated.
+The end goal of this emulator is to get the original Legend of Zelda game from 1986 running on this emulator, but before that I will get the original Super Mario Bros game working. The Super Mario Bros game was designed using the Mapper 0 cartridge, which is significantly easier compared to the Mapper 1 cartridge, which Zelda uses. By that point I will have learned a boatload about how emulator development works as well. It's been quite fascinating so far and I hope to keep up with this. I'm going to get the NTSC NES (runs on 60 fps) emulated.
+
+Right now I'm implementing the CPU for the NES and the main idea is to recreate the CPU instructions but in C. We then want to be able to read from a game ROM which has a bunch of opcodes each corresponding to a specific instruction call with a different addressing mode. With that being said it is worth a ton of lines and I'm working to comment out each case so that it is more coherent.

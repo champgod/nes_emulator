@@ -40,6 +40,8 @@ void DEX(cpuRegisters* cpu); // Decrements X, X = X - 1
 void INY(cpuRegisters* cpu); // Increments Y, Y = Y + 1
 void DEY(cpuRegisters* cpu); // Decrements Y, Y = Y - 1
 
+//void AND(cpuRegisters* cpu, uint8_t )
+
 void cpuStep(cpuRegisters* cpu, Memory* memory); 
 
 #endif
