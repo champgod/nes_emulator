@@ -48,7 +48,8 @@ static uint8_t zeroPageAddress(cpuRegisters* cpu, Memory* memory) {
 }
 /* INDEXED INDIRECT ADDRESS X METHOD */
 static uint16_t indirectAddressX(cpuRegisters* cpu, Memory* memory) {
-    uint8_t pointer = readMemory(memory, cpu->PC++ + cpu->X); // recall that an indirect address will give us yet another address. what then?
+    uint8_t pointer = readMemory(memory, cpu->PC++); // recall that an indirect address will give us yet another address. what then?
+    pointer = (uint8_t)(pointer + cpu->X);
 
     uint8_t low = readMemory(memory, pointer); // we take low as our pointer address (least significant, following endian ordering)
     uint8_t high = readMemory(memory, (uint8_t) (pointer + 1)); // we take high as the following address
