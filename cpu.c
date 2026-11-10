@@ -145,15 +145,28 @@ void DEY(cpuRegisters* cpu){
 }
 
 void cpuStep(cpuRegisters* cpu, Memory* memory){
-    uint8_t opcode = readMemory(memory, cpu->PC); // Recall that PC stores the address of the following instruction 
+    uint8_t opcode = readMemory(memory, cpu->PC++); // Recall that PC stores the address of the following instruction 
     switch (opcode){
-        case 0xA9: // LDA IMMEDIATE ADDRESSING
+        case 0xA9:{ // IMMEDIATE ADDRESSING (means we fetch the value and directly load to A)
             uint8_t value = readMemory(memory, cpu->PC++);
             LDA(cpu, value);
             break;
-        case 0xA5:
+        }
+        case 0xA5:{ // ZERO ADDRESSING (means we fetch the address, find the value at the address and load to A)
+            uint8_t address = readMemory(memory, cpu->PC++); // this should ideally read the instruction and give us the operand which is an address
+            LDA(cpu, readMemory(memory, address));
             break;
-        case:
-            break
+        }
+        case 0xAD:{ // ABSOLUTE ADDRESSING (means we fetch the opcode, then low byte and high byte - combine them and get the actual address for which the value is to be loaded)
+            uint8_t low = readMemory(memory, cpu->PC++);
+            uint8_t high = readMemory(memory, cpu->PC++);
+            uint16_t address = ((uint16_t) high << 8) | low;
+
+            LDA(cpu, readMemory(memory, address));
+            break; 
+        }
+        default:
+            printf("No existing opcode here")
+            break;
     }
 }
