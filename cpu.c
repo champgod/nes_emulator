@@ -255,18 +255,130 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             LDX(cpu, readMemory(memory, (uint16_t)(address + cpu->Y)));
             break;
         }
+        case 0xA0: { // LDY IMMEDIATE 
+            uint8_t value = immediateAddress(cpu, memory);
+            LDY(cpu, value);
+            break;
+        }
+        case 0xA4: { // LDY ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            LDY(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xAC: { // LDY ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            LDY(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xB4: { // LDY ZERO PAGE X
+            uint8_t address = zeroPageAddress(cpu, memory);
+            LDY(cpu, readMemory(memory, (uint8_t) (address + cpu->X)));
+            break;
+        }
+        case 0xBC: { // LDY ABSOLUTE X
+            uint16_t address = absoluteAddress(cpu, memory);
+            LDY(cpu, readMemory(memory, (uint16_t)(address + cpu->X)));
+            break;
+        }
+        case 0X85: { // STA ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            STA(cpu, address, memory);
+            break;
+        }
+        case 0x95: { // STA ZERO PAGE X
+            uint8_t address = zeroPageAddress(cpu, memory);
+            STA(cpu, (uint8_t) (address + cpu->X), memory);
+            break;
+        }
+        case 0x8D: { // STA ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            STA(cpu, address, memory); // naming convention for my method some TRASH but im too far to change it now
+            break;
+        }
+        case 0x9D: { // STA ABSOLUTE X
+            uint16_t address = absoluteAddress(cpu, memory);
+            STA(cpu, (uint16_t) (address + cpu->X), memory);
+            break;
+        }
+        case 0x99: { // STA ABSOLUTE Y
+            uint16_t address = absoluteAddress(cpu, memory);
+            STA(cpu, (uint16_t) (address + cpu->Y), memory);
+            break;
+        }
+        case 0x81: { // STA INDIRECT X
+            uint16_t address = indirectAddressX(cpu, memory);
+            STA(cpu, address, memory);
+            break;
+        }
+        case 0x91: { // STA INDIRECT Y
+            uint16_t address = indirectAddressY(cpu, memory);
+            STA(cpu, address, memory);
+            break;
+        }
+        case 0x86: { // STX ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            STX(cpu, address, memory);
+            break;
+        }
+        case 0x96: { // STX ZERO PAGE (Y)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            STX(cpu, (uint8_t)(address + cpu->Y), memory);
+            break;    
+        }
+        case 0x8E: { // STX ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            STX(cpu, address, memory);
+            break;    
+        }
+        case 0x84: { // STY ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            STY(cpu, address, memory);
+            break;    
+        }
+        case 0x94: { // STY ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            STY(cpu, (uint8_t)(address + cpu->X), memory);
+            break;    
+        }
+        case 0x8C: { // STY ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            STY(cpu, address, memory);
+            break;    
+        }
+        case 0xAA: { // TAX 
+            TAX(cpu);
+            break;    
+        }
+        case 0xA8: { // TAY
+            TAY(cpu);
+            break;
+        }
+        case 0x8A: { // TXA
+            TXA(cpu);
+            break;    
+        }
+        case 0x98: { // TYA
+            TYA(cpu);
+            break;    
+        }
+        case 0xE8: { // INX
+            INX(cpu);
+            break;    
+        }
+        case 0xC8: { // INY
+            INY(cpu);
+            break;
+        }
+        case 0xCA: { // DEX
+            DEX(cpu);
+            break;    
+        }
+        case 0x88: { // DEY
+            DEY(cpu);
+            break;
+        }
         default:
             printf("No existing opcode here");
             break;
     }
 }
-
-/*
-LD X
-Addressing mode 	Opcode 	Bytes 	Cycles
-#Immediate 	$A2 	2 	2
-Zero Page 	$A6 	2 	3
-Zero Page,Y 	$B6 	2 	4
-Absolute 	$AE 	3 	4
-Absolute,Y 	$BE 	3 	4 (5 if page crossed) 
-*/
