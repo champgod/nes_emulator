@@ -72,6 +72,7 @@ static uint16_t indirectAddressY(cpuRegisters* cpu, Memory* memory) {
 
 /* Instruction calls but written in C */
 
+/* ACCESS INSTRUCTION SET */
 void LDA(cpuRegisters* cpu, uint8_t value){
     cpu->A = value;
     updateZN(cpu, value);
@@ -98,6 +99,7 @@ void STY(cpuRegisters* cpu, uint16_t address, Memory* memory){
    writeMemory(memory, address, cpu->Y);
 }
 
+/* TRANSFER INSTRUCTION SET */
 void TAX(cpuRegisters* cpu){
     cpu->X = cpu->A;
     updateZN(cpu, cpu->X);
@@ -118,6 +120,7 @@ void TYA(cpuRegisters* cpu){
     updateZN(cpu, cpu->A);
 }
 
+/*ARITHMETIC INSTRUCTION SET*/
 void ADC(cpuRegisters* cpu, uint8_t value){
     // Adds with carry: A = A + value + C
     /* There are 4 flags to updated from our P register here, the zero flag (Z), the negative flag (N), the carry flag (C), and the overflow flag (V). 
@@ -187,6 +190,104 @@ void DEY(cpuRegisters* cpu){
     cpu->Y--;
     updateZN(cpu, cpu->Y);
 }
+/* SHIFT INSTRUCTION SET*/
+void ASL(cpuRegisters* cpu, Memory* memory, uint16_t address, bool accumulator){
+    if (accumulator){
+        if (cpu->A & (1 << 7)){
+            cpu->P |= (1 << 0);
+        }else{
+            cpu->P &= ~(1 << 0);
+        }
+        cpu->A <<= 1;
+        updateZN(cpu, cpu->A);
+    }else{
+        uint8_t value = readMemory(memory, address);
+        if (value & (1 << 7)){
+            cpu->P |= (1 << 0);
+        }else{
+            cpu->P &= ~(1 << 0);
+        }
+        writeMemory(memory, address, value); // some reason there's an extra write
+        writeMemory(memory, address, value<<=1);
+        updateZN(cpu, value);
+    }
+}
+void LSR(cpuRegisters* cpu, Memory* memory, uint16_t address, bool accumulator){
+    if (accumulator){
+        if (cpu->A & (1 << 0)){
+            cpu->P |= (1 << 0);
+        }else{
+            cpu->P &= ~(1 << 0);
+        }
+        cpu->A >>= 1;
+        updateZN(cpu, cpu->A);
+    }else{
+        uint8_t value = readMemory(memory, address);
+        if (value & (1 << 0)){
+            cpu->P |= (1 << 0);
+        }else{
+            cpu->P &= ~(1 << 0);
+        }
+        writeMemory(memory, address, value); // some reason there's an extra write
+        writeMemory(memory, address, value>>=1);
+        updateZN(cpu, value);
+    }
+}
+
+void ROL(cpuRegisters* cpu, Memory* memory, uint16_t address, bool accumulator){
+    uint8_t originalCarry = cpu->P & (1 << 0);
+    if (accumulator){
+        if (cpu->A & (1 << 7)){
+            cpu->P |= (1 << 0);
+        }else{
+            cpu->P &= ~(1 << 0);
+        }
+        cpu->A <<= 1;
+        cpu->A |= originalCarry;
+        updateZN(cpu, cpu->A);
+    }else{
+        uint8_t value = readMemory(memory, address);
+        if (value & (1 << 7)){
+            cpu->P |= (1 << 0);
+        }else{
+            cpu->P &= ~(1 << 0);
+        }
+        writeMemory(memory, address, value); // some reason there's an extra write
+        value <<= 1;
+        value |= originalCarry;
+
+        writeMemory(memory, address, value);
+        updateZN(cpu, value);
+    }
+}
+void ROR(cpuRegisters* cpu, Memory* memory, uint16_t address, bool accumulator){
+    uint8_t originalCarry = cpu->P & (1 << 0);
+    if (accumulator){
+        if (cpu->A & (1 << 0)){
+            cpu->P |= (1 << 0);
+        }else{
+            cpu->P &= ~(1 << 0);
+        }
+        cpu->A >>= 1;
+        cpu->A |= (originalCarry << 7);
+        updateZN(cpu, cpu->A);
+    }else{
+        uint8_t value = readMemory(memory, address);
+        if (value & (1 << 0)){
+            cpu->P |= (1 << 0);
+        }else{
+            cpu->P &= ~(1 << 0);
+        }
+        writeMemory(memory, address, value); // some reason there's an extra write
+        value >>= 1;
+        value |= (originalCarry << 7);
+
+        writeMemory(memory, address, value);
+        updateZN(cpu, value);
+    }
+}
+
+/*BITWISE INSTRUCTION SET*/
 void AND(cpuRegisters* cpu, uint8_t memory){
     cpu->A &= memory;
     updateZN(cpu, cpu->A);    
@@ -209,6 +310,7 @@ void BIT(cpuRegisters* cpu, uint8_t memory){
     cpu->P = (cpu->P & ~(1 << 7)) | (memory & (1 << 7)); // N flag set
     cpu->P = (cpu->P & ~(1 << 6)) | (memory & (1 << 6)); // V flag set
 } 
+/* COMPARE INSTRUCTION SET */
 void CMP(cpuRegisters* cpu, uint8_t memory){
     if (cpu->A >= memory){
         cpu->P |= (1 << 0); // sets C flag to 1
@@ -233,11 +335,38 @@ void CPY(cpuRegisters* cpu, uint8_t memory){
     }
     updateZN(cpu, (cpu->Y - memory));
 }
+/*BRANCH INSTRUCTION SET*/
 
+/*JUMP INSTRUCTION SET*/
 void JMP(cpuRegisters* cpu, uint16_t address){
     cpu->PC = address;
 }
 
+/*STACK INSTRUCTION SET*/
+void PHA(cpuRegisters* cpu, Memory* memory){
+    writeMemory(memory, 0x0100 + cpu->S, cpu->A);
+    cpu->S--;
+}
+void PLA(cpuRegisters* cpu, Memory* memory){
+    cpu->S++;
+    LDA(cpu, readMemory(memory, 0x0100 + cpu->S));
+}
+void PHP(cpuRegisters* cpu, Memory* memory){
+    writeMemory(memory, 0x0100 + cpu->S, cpu->P | (1 << 4) | (1 << 5));
+    cpu->S--;
+}
+void PLP(cpuRegisters* cpu, Memory* memory){
+    cpu->S++;
+    cpu->P = (readMemory(memory, 0x0100 + cpu->S) & ~(1 << 4)) | (1 << 5);
+}
+void TXS(cpuRegisters* cpu){
+    cpu->S = cpu->X;
+}
+void TSX(cpuRegisters* cpu){
+    cpu->X = cpu->S;
+    updateZN(cpu, cpu->X);
+}
+/*FLAGS INSTRUCTION SET */
 void CLC(cpuRegisters* cpu){
     cpu->P &= ~(1 << 0);
 }
@@ -259,6 +388,11 @@ void SEI(cpuRegisters* cpu){
 void SED(cpuRegisters* cpu){
     cpu->P |= (1 << 3);
 }
+
+/* OTHER */
+void NOP(void){
+}
+
 
 void cpuStep(cpuRegisters* cpu, Memory* memory){
     uint8_t opcode = readMemory(memory, cpu->PC++); // Recall that PC stores the address of the following instruction 
