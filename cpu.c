@@ -234,8 +234,31 @@ void CPY(cpuRegisters* cpu, uint8_t memory){
     updateZN(cpu, (cpu->Y - memory));
 }
 
+void JMP(cpuRegisters* cpu, uint16_t address){
+    cpu->PC = address;
+}
 
-
+void CLC(cpuRegisters* cpu){
+    cpu->P &= ~(1 << 0);
+}
+void CLI(cpuRegisters* cpu){
+    cpu->P &= ~(1 << 2);
+}
+void CLD(cpuRegisters* cpu){
+    cpu->P &= ~(1 << 3);
+}
+void CLV(cpuRegisters* cpu){
+    cpu->P &= ~(1 << 6);
+}
+void SEC(cpuRegisters* cpu){
+    cpu->P |= (1 << 0);
+}
+void SEI(cpuRegisters* cpu){
+    cpu->P |= (1 << 2);
+}
+void SED(cpuRegisters* cpu){
+    cpu->P |= (1 << 3);
+}
 
 void cpuStep(cpuRegisters* cpu, Memory* memory){
     uint8_t opcode = readMemory(memory, cpu->PC++); // Recall that PC stores the address of the following instruction 

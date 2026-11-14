@@ -49,6 +49,20 @@ void CMP(cpuRegisters* cpu, uint8_t memory); // Compares memory with A and updat
 void CPX(cpuRegisters* cpu, uint8_t memory); // Compares memory with X and updates status flags but no registers
 void CPY(cpuRegisters* cpu, uint8_t memory); // Compares memory with Y and updates status flags but no registers
 
+void JMP(cpuRegisters* cpu, uint16_t address); // Sets PC to memory
+
+
+
+
+/*FLAGs*/
+void CLC(cpuRegisters* cpu); // Clears C flag
+void CLI(cpuRegisters* cpu); // Clears I flag
+void CLD(cpuRegisters* cpu); // Clears D flag
+void CLV(cpuRegisters* cpu); // Clears V flag
+void SEC(cpuRegisters* cpu); // Sets C flag
+void SEI(cpuRegisters* cpu); // Sets I flag
+void SED(cpuRegisters* cpu); // Sets D flag
+
 
 void cpuStep(cpuRegisters* cpu, Memory* memory); 
 
