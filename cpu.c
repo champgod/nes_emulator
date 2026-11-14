@@ -187,6 +187,55 @@ void DEY(cpuRegisters* cpu){
     cpu->Y--;
     updateZN(cpu, cpu->Y);
 }
+void AND(cpuRegisters* cpu, uint8_t memory){
+    cpu->A &= memory;
+    updateZN(cpu, cpu->A);    
+}
+void ORA(cpuRegisters* cpu, uint8_t memory){
+    cpu->A |= memory;
+    updateZN(cpu, cpu->A);
+}
+void EOR(cpuRegisters* cpu, uint8_t memory){
+    cpu->A ^= memory;
+    updateZN(cpu, cpu->A);
+}
+void BIT(cpuRegisters* cpu, uint8_t memory){
+    uint8_t result = cpu->A & memory;
+    if (result == 0){
+        cpu->P |= (1<<1); //Sets Z flag to 0
+    }else{
+        cpu->P &= ~(1<<1); // Sets Z flag to 1
+    }
+    cpu->P = (cpu->P & ~(1 << 7)) | (memory & (1 << 7)); // N flag set
+    cpu->P = (cpu->P & ~(1 << 6)) | (memory & (1 << 6)); // V flag set
+} 
+void CMP(cpuRegisters* cpu, uint8_t memory){
+    if (cpu->A >= memory){
+        cpu->P |= (1 << 0); // sets C flag to 1
+    }else{
+        cpu->P &= ~(1 << 0); // sets C flag to 0
+    }   
+    updateZN(cpu, (cpu->A - memory));
+}
+void CPX(cpuRegisters* cpu, uint8_t memory){
+    if (cpu->X >= memory){
+        cpu->P |= (1 << 0);
+    }else{
+        cpu->P &= ~(1 << 0);
+    }
+    updateZN(cpu, (cpu->X - memory));
+}
+void CPY(cpuRegisters* cpu, uint8_t memory){
+    if (cpu->Y >= memory){
+        cpu->P |= (1 << 0);
+    }else{
+        cpu->P &= ~(1 << 0);
+    }
+    updateZN(cpu, (cpu->Y - memory));
+}
+
+
+
 
 void cpuStep(cpuRegisters* cpu, Memory* memory){
     uint8_t opcode = readMemory(memory, cpu->PC++); // Recall that PC stores the address of the following instruction 

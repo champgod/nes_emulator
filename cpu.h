@@ -40,7 +40,15 @@ void DEX(cpuRegisters* cpu); // Decrements X, X = X - 1
 void INY(cpuRegisters* cpu); // Increments Y, Y = Y + 1
 void DEY(cpuRegisters* cpu); // Decrements Y, Y = Y - 1
 
-//void AND(cpuRegisters* cpu, uint8_t )
+void AND(cpuRegisters* cpu, uint8_t memory); // A = A & memory
+void ORA(cpuRegisters* cpu, uint8_t memory); // A = A | memory
+void EOR(cpuRegisters* cpu, uint8_t memory); // A = A ^ memory
+
+void BIT(cpuRegisters* cpu, uint8_t memory); // A & memory bit test
+void CMP(cpuRegisters* cpu, uint8_t memory); // Compares memory with A and updates status flags but no registers
+void CPX(cpuRegisters* cpu, uint8_t memory); // Compares memory with X and updates status flags but no registers
+void CPY(cpuRegisters* cpu, uint8_t memory); // Compares memory with Y and updates status flags but no registers
+
 
 void cpuStep(cpuRegisters* cpu, Memory* memory); 
 
