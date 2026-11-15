@@ -336,11 +336,59 @@ void CPY(cpuRegisters* cpu, uint8_t memory){
     updateZN(cpu, (cpu->Y - memory));
 }
 /*BRANCH INSTRUCTION SET*/
+void BCC(cpuRegisters* cpu, int8_t offset){
+    if (!(cpu->P & (1 << 0))){
+        cpu->PC += offset;
+    }
+}
+void BCS(cpuRegisters* cpu, int8_t offset){
+    if (cpu->P & (1 << 0)){
+        cpu->PC += offset;
+    }
+}
+void BEQ(cpuRegisters* cpu, int8_t offset){
+    if (cpu->P & (1 << 1)){
+        cpu->PC += offset;
+    }
+}
+void BNE(cpuRegisters* cpu, int8_t offset){
+    if (!(cpu->P & (1 << 1))){
+        cpu->PC += offset;
+    }
+}
+void BPL(cpuRegisters* cpu, int8_t offset){
+    if (!(cpu->P & (1 << 7))){
+        cpu->PC += offset;
+    }
+}
+void BMI(cpuRegisters* cpu, int8_t offset){
+    if (cpu->P & (1 << 7)){
+        cpu->PC += offset;
+    }
+}
+void BVC(cpuRegisters* cpu, int8_t offset){
+    if (!(cpu->P & (1 << 6))){
+        cpu->PC += offset;
+    }
+}
+void BVS(cpuRegisters* cpu, int8_t offset){
+    if (cpu->P & (1 << 6)){
+        cpu->PC += offset;
+    }
+}
 
 /*JUMP INSTRUCTION SET*/
 void JMP(cpuRegisters* cpu, uint16_t address){
     cpu->PC = address;
 }
+
+void JSR(cpuRegisters* cpu, Memory* memory, uint16_t address){
+    writeMemory(memory, cpu->PC <<)
+    cpu->S--;
+}
+void RTS(cpuRegisters* cpu);
+void BRK(cpuRegisters* cpu);
+void RTI(cpuRegisters* cpu);
 
 /*STACK INSTRUCTION SET*/
 void PHA(cpuRegisters* cpu, Memory* memory){

@@ -5,6 +5,7 @@ the NTSC Ricoh 2A03 CPU that the NES traditionally uses. Here we are defining wh
 #define CPU_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "memory.h"
 
 typedef struct {
@@ -61,14 +62,14 @@ void CPX(cpuRegisters* cpu, uint8_t memory); // Compares memory with X and updat
 void CPY(cpuRegisters* cpu, uint8_t memory); // Compares memory with Y and updates status flags but no registers
 
 /* BRANCH */
-void BCC();
-void BCS();
-void BEQ();
-void BNE();
-void BPL();
-void BMI();
-void BVC();
-void BVS();
+void BCC(cpuRegisters* cpu, int8_t offset);
+void BCS(cpuRegisters* cpu, int8_t offset);
+void BEQ(cpuRegisters* cpu, int8_t offset);
+void BNE(cpuRegisters* cpu, int8_t offset);
+void BPL(cpuRegisters* cpu, int8_t offset);
+void BMI(cpuRegisters* cpu, int8_t offset);
+void BVC(cpuRegisters* cpu, int8_t offset);
+void BVS(cpuRegisters* cpu, int8_t offset);
 
 /* JUMP*/
 void JMP(cpuRegisters* cpu, uint16_t address); // Sets PC to memory
