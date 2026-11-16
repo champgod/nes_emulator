@@ -383,12 +383,36 @@ void JMP(cpuRegisters* cpu, uint16_t address){
 }
 
 void JSR(cpuRegisters* cpu, Memory* memory, uint16_t address){
-    writeMemory(memory, cpu->PC <<)
+    uint16_t returnAddress = cpu->PC - 1;
+    writeMemory(memory, 0x0100 + cpu->S, returnAddress >> 8);
     cpu->S--;
+
+    writeMemory(memory, 0x0100 + cpu->S, returnAddress & 0xFF);
+    cpu->S--;
+
+    cpu->PC = address;
 }
-void RTS(cpuRegisters* cpu);
-void BRK(cpuRegisters* cpu);
-void RTI(cpuRegisters* cpu);
+void RTS(cpuRegisters* cpu, Memory* memory){
+    cpu->S++;
+    uint8_t low = readMemory(memory, 0x0100 + cpu->S);
+
+    cpu->S++;
+    uint8_t high = readMemory(memory, 0x0100 + cpu->S);
+    cpu->PC = (((uint16_t) high << 8) | low) + 1;
+}
+void BRK(cpuRegisters* cpu){
+    uint16_t returnAddress = cpu->PC - 1;
+    writeMemory(memory, 0x0100 + cpu->S, returnAddress >> 8);
+    cpu->S--;
+
+    writeMemory(memory, 0x0100 + cpu->S, returnAddress & 0xFF);
+    cpu->S--;
+
+    cpu->PC = address;
+}
+void RTI(cpuRegisters* cpu){
+
+}
 
 /*STACK INSTRUCTION SET*/
 void PHA(cpuRegisters* cpu, Memory* memory){
