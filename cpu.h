@@ -73,6 +73,11 @@ void BVS(cpuRegisters* cpu, int8_t offset);
 
 /* JUMP*/
 void JMP(cpuRegisters* cpu, uint16_t address); // Sets PC to memory
+void JSR(cpuRegisters* cpu, Memory* memory, uint16_t address); // Jump to subroutine
+void RTS(cpuRegisters* cpu, Memory* memory); // Return from subroutine
+void BRK(cpuRegisters* cpu, Memory* memory); // Break
+void RTI(cpuRegisters* cpu, Memory* memory); // Return from interrupt
+
 
 
 /*STACK*/
