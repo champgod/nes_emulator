@@ -993,6 +993,31 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             CPY(cpu, readMemory(memory, address));
             break;    
         }
+        case 0x0A: {  // ASL ACCUMULATOR
+            // ASL(cpu, memory, address, accumulator)
+            ASL(cpu, memory, 0, true);
+            break;
+        }
+        case 0x06: { // ASL ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            ASL(cpu, memory, address, false);
+            break;
+        }
+        case 0x16: { // ASL ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            ASL(cpu, memory, (uint8_t)(address + cpu->X), false);
+            break;    
+        }
+        case 0x0E: { // ASL ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            ASL(cpu, memory, address, false);
+            break;    
+        }
+        case 0x1E: { // ASL ABSOLUTE (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            ASL(cpu, memory, (uint16_t)(address + cpu->X), false);
+            break;
+        }
         default:
             printf("No existing opcode here");
             break;
