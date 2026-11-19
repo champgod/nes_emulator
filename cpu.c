@@ -912,6 +912,87 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             EOR(cpu, readMemory(memory, address));
             break;
         }
+        case 0x24: { // BIT ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            BIT(cpu, readMemory(memory, address));
+            break;    
+        }
+        case 0x2C: { // BIT ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            BIT(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xC9: { // CMP IMMEDIATE
+            uint8_t value = immediateAddress(cpu, memory);
+            CMP(cpu, value);
+            break;
+        }
+        case 0xC5: { // CMP ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            CMP(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xD5: { // CMP ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            CMP(cpu, readMemory(memory, (uint8_t)(address + cpu->X)));
+            break;
+        }
+        case 0xCD: { // CMP ABSOLUTE 
+            uint16_t address = absoluteAddress(cpu, memory);
+            CMP(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xDD: { // CMP ABSOLUTE (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            CMP(cpu, readMemory(memory, (uint16_t)(address + cpu->X)));
+            break;
+            
+        }
+        case 0xD9: { // CMP ABSOLUTE(Y) 
+            uint16_t address = absoluteAddress(cpu, memory);
+            CMP(cpu, readMemory(memory, (uint16_t)(address + cpu->Y)));
+            break;
+        }
+        case 0xC1: { // CMP INDIRECT (X)
+            uint16_t address = indirectAddressX(cpu, memory);
+            CMP(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xD1: { // CMP INDIRECT (Y)
+            uint16_t address = indirectAddressY(cpu, memory);
+            CMP(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xE0: { // CPX IMMEDIATE
+            uint8_t value = immediateAddress(cpu, memory);
+            CPX(cpu, value);
+            break;
+        }
+        case 0xE4: { // CPX ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            CPX(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xEC: { // CPX ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            CPX(cpu, readMemory(memory, address));
+            break;    
+        }
+        case 0xC0: { // CPY IMMEDIATE
+            uint8_t value = immediateAddress(cpu, memory);
+            CPY(cpu, value);
+            break;
+        }
+        case 0xC4: { // CPY ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            CPY(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xCC: { // CPY ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            CPY(cpu, readMemory(memory, address));
+            break;    
+        }
         default:
             printf("No existing opcode here");
             break;
