@@ -1018,6 +1018,54 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             ASL(cpu, memory, (uint16_t)(address + cpu->X), false);
             break;
         }
+        case 0x4A: { // LSR ACCUMULATOR 
+            LSR(cpu, memory, 0, true);
+            break;    
+        }
+        case 0x46: { // LSR ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            LSR(cpu, memory, address, false);
+            break;
+        }
+        case 0x56: { // LSR ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            LSR(cpu, memory, (uint8_t)(address + cpu->X), false);
+            break;    
+        }
+        case 0x4E: { // LSR ABSOLUTE 
+            uint16_t address = absoluteAddress(cpu, memory);
+            LSR(cpu, memory, address, false);
+            break;    
+        }
+        case 0x5E: { // LSR ABSOLUTE (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            LSR(cpu, memory, (uint16_t)(address + cpu->X), false);
+            break;    
+        }
+        case 0x6A: { // ROR ACCUMULATOR 
+            ROR(cpu, memory, 0, true);
+            break;   
+        }
+        case 0x66: { // ROR ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            ROR(cpu, memory, address, false);
+            break;    
+        }
+        case 0x76: { // ROR ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            ROR(cpu, memory, (uint8_t)(address + cpu->X), false);
+            break;    
+        }
+        case 0x6E: { // ROR ABSOLUTE 
+            uint16_t address = absoluteAddress(cpu, memory);
+            ROR(cpu, memory, address, false);
+            break;    
+        }
+        case 0x7E: { // ROR ABSOLUTE (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            ROR(cpu, memory, (uint16_t)(address + cpu->X), false);
+            break;
+        }
         default:
             printf("No existing opcode here");
             break;
