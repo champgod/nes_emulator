@@ -872,6 +872,46 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             ORA(cpu, readMemory(memory, address));
             break;
         }
+        case 0x49: { // EOR IMMEDIATE
+            uint8_t value = immediateAddress(cpu, memory);
+            EOR(cpu, value);
+            break;
+        }
+        case 0x45: { // EOR ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            EOR(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0x55: { // EOR ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            EOR(cpu, readMemory(memory, (uint8_t)(address + cpu->X)));
+            break;
+        }
+        case 0x4D: { // EOR ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            EOR(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0x5D: { // EOR ABSOLUTE (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            EOR(cpu, readMemory(memory, (uint16_t)(address + cpu->X)));
+            break;
+        }
+        case 0x59: { // EOR ABSOLUTE (Y)
+            uint16_t address = absoluteAddress(cpu, memory);
+            EOR(cpu, readMemory(memory, (uint16_t)(address + cpu->Y)));
+            break;
+        }
+        case 0x41: { // EOR INDIRECT (X)
+            uint16_t address = indirectAddressX(cpu, memory);
+            EOR(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0x51: { // EOR INDIRECT (Y)
+            uint16_t address = indirectAddressY(cpu, memory);
+            EOR(cpu, readMemory(memory, address));
+            break;
+        }
         default:
             printf("No existing opcode here");
             break;
