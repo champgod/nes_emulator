@@ -792,6 +792,46 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             DEC(cpu, memory, (uint16_t)(address + cpu->X));
             break;
         }
+        case 0x29: { // AND IMMEDIATE
+            uint8_t value = immediateAddress(cpu, memory);
+            AND(cpu, value);
+            break;
+        }
+        case 0x25: { // AND ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            AND(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0x35: { // AND ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            AND(cpu, readMemory(memory, (uint8_t)(address + cpu->X)));
+            break;
+        }
+        case 0x2D: { // AND ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            AND(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0x3D: { // AND ABSOLUTE (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            AND(cpu, readMemory(memory, (uint16_t)(address + cpu->X)));
+            break;
+        }
+        case 0x39: { // AND ABSOLUTE (Y)
+            uint16_t address = absoluteAddress(cpu, memory);
+            AND(cpu, readMemory(memory, (uint16_t)(address + cpu->Y)));
+            break;
+        }
+        case 0x21: { // AND INDIRECT (X)
+            uint16_t address = indirectAddressX(cpu, memory);
+            AND(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0x31: { // AND INDIRECT (Y)
+            uint16_t address = indirectAddressY(cpu, memory);
+            AND(cpu, readMemory(memory, address));
+            break;
+        }
         default:
             printf("No existing opcode here");
             break;
