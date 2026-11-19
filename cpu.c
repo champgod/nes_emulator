@@ -400,18 +400,34 @@ void RTS(cpuRegisters* cpu, Memory* memory){
     uint8_t high = readMemory(memory, 0x0100 + cpu->S);
     cpu->PC = (((uint16_t) high << 8) | low) + 1;
 }
-void BRK(cpuRegisters* cpu){
-    uint16_t returnAddress = cpu->PC - 1;
+void BRK(cpuRegisters* cpu, Memory* memory){
+    uint16_t returnAddress = cpu->PC + 1;
     writeMemory(memory, 0x0100 + cpu->S, returnAddress >> 8);
     cpu->S--;
 
     writeMemory(memory, 0x0100 + cpu->S, returnAddress & 0xFF);
     cpu->S--;
 
-    cpu->PC = address;
-}
-void RTI(cpuRegisters* cpu){
+    writeMemory(memory, 0x0100 + cpu->S, cpu->P | (1 << 4) | (1 << 5));
+    cpu->S--;
 
+    cpu->P |= (1 << 2);
+
+    uint8_t low = readMemory(memory, 0xFFFE);
+    uint8_t high = readMemory(memory, 0xFFFF);
+    cpu->PC = (((uint16_t) high << 8) | low);
+}
+void RTI(cpuRegisters* cpu, Memory* memory){
+    cpu->S++;
+    cpu->P = (readMemory(memory, 0x0100 + cpu->S) & ~(1 << 4)) | (1 << 5); // read memory from stack directly into P excluding bits 4 5
+
+    cpu->S++;
+    uint8_t low = readMemory(memory, 0x0100 + cpu->S);
+
+    cpu->S++;
+    uint8_t high = readMemory(memory, 0x0100 + cpu->S);
+
+    cpu->PC = (((uint16_t) high << 8) | low);
 }
 
 /*STACK INSTRUCTION SET*/
