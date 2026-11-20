@@ -1066,6 +1066,71 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             ROR(cpu, memory, (uint16_t)(address + cpu->X), false);
             break;
         }
+        case 0x2A: { // ROL ACCUMULATOR 
+            ROL(cpu, memory, 0, true);
+            break;   
+        }
+        case 0x26: { // ROL ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            ROL(cpu, memory, address, false);
+            break;    
+        }
+        case 0x36: { // ROL ZERO PAGE (X)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            ROL(cpu, memory, (uint8_t)(address + cpu->X), false);
+            break;    
+        }
+        case 0x2E: { // ROL ABSOLUTE 
+            uint16_t address = absoluteAddress(cpu, memory);
+            ROL(cpu, memory, address, false);
+            break;    
+        }
+        case 0x3E: { // ROL ABSOLUTE (X)
+            uint16_t address = absoluteAddress(cpu, memory);
+            ROL(cpu, memory, (uint16_t)(address + cpu->X), false);
+            break;
+        }
+        case 0x4C: { // JMP ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            JMP(cpu, address);
+            break;
+        }
+        case 0x6C: { // JMP INDIRECT
+            uint16_t pointer = absoluteAddress(cpu, memory);
+            uint8_t low = readMemory(memory, pointer);
+            uint8_t high = readMemory(memory, (pointer & 0xFF00) | ((pointer + 1) & 0x00FF)); // review the 0xFF00 and 0x00FF bit (been using bitmasks all this time but might be easier to go for this)
+            uint16_t address = ((uint16_t)high << 8) | low;
+            JMP(cpu, address);
+            break;
+        }
+        case 0xD8: { // CLD IMPLIED
+            CLD(cpu);
+            break;    
+        }
+        case 0xF8: { // SED IMPLIED
+            SED(cpu);
+            break;    
+        }
+        case 0x58: { // CLI IMPLIED
+            CLI(cpu);
+            break;    
+        }
+        case 0x78: { // SEI IMPLIED
+            SEI(cpu);
+            break;    
+        }
+        case 0xB8: { // CLV IMPLIED
+            CLV(cpu);
+            break;    
+        }
+        case 0x18: { // CLC IMPLIED
+            CLC(cpu);
+            break;    
+        }
+        case 0x38: { // SEC IMPLIED
+            SEC(cpu);
+            break;    
+        }
         default:
             printf("No existing opcode here");
             break;
