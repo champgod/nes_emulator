@@ -1159,6 +1159,23 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             PLP(cpu, memory);
             break;    
         }
+        case 0x60: { // RTS IMPLIED
+            RTS(cpu, memory);
+            break;    
+        }
+        case 0x40: { // RTI IMPLIED
+            RTI(cpu, memory);
+            break;    
+        }
+        case 0x00: { // BRK IMPLIED
+            BRK(cpu, memory);
+            break;    
+        }
+        case 0x20: { // JSR ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            JSR(cpu, memory, address);
+            break;    
+        }
         default:
             printf("No existing opcode here");
             break;
