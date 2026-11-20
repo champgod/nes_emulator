@@ -1131,6 +1131,50 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             SEC(cpu);
             break;    
         }
+        case 0xBA: { // TSX IMPLIED
+            TSX(cpu);
+            break;    
+        }
+        case 0x9A: { // TXS IMPLIED
+            TXS(cpu);    
+            break;
+        }
+        case 0x8A: { // TXA IMPLIED
+            TXA(cpu);
+            break;    
+        }
+        case 0xAA: { // TAX IMPLIED
+            TAX(cpu);
+            break;    
+        }
+        case 0xA8: { // TAY IMPLIED
+            TAY(cpu);
+            break;    
+        }
+        case 0x98: { // TYA IMPLIED
+            TYA(cpu);
+            break;    
+        }
+        case 0xEA: { // NOP IMPLIED
+            NOP();
+            break;    
+        }
+        case 0x48: { // PHA IMPLIED
+            PHA(cpu, memory);
+            break;    
+        }
+        case 0x08: { // PHP IMPLIED
+            PHP(cpu, memory);
+            break;    
+        }
+        case 0x68: { // PLA IMPLIED
+            PLA(cpu, memory);
+            break;    
+        }
+        case 0x28: { // PLP IMPLIED
+            PLP(cpu, memory);
+            break;    
+        }
         default:
             printf("No existing opcode here");
             break;
