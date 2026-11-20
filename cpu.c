@@ -1139,22 +1139,6 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             TXS(cpu);    
             break;
         }
-        case 0x8A: { // TXA IMPLIED
-            TXA(cpu);
-            break;    
-        }
-        case 0xAA: { // TAX IMPLIED
-            TAX(cpu);
-            break;    
-        }
-        case 0xA8: { // TAY IMPLIED
-            TAY(cpu);
-            break;    
-        }
-        case 0x98: { // TYA IMPLIED
-            TYA(cpu);
-            break;    
-        }
         case 0xEA: { // NOP IMPLIED
             NOP();
             break;    
