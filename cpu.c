@@ -1176,6 +1176,46 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             JSR(cpu, memory, address);
             break;    
         }
+        case 0x90: { // BCC RELATIVE
+            int8_t offset = (int8_t)readMemory(memory, cpu->PC++);
+            BCC(cpu, offset);
+            break;
+        }
+        case 0xB0: { // BCS RELATIVE
+            int8_t offset = (int8_t)readMemory(memory, cpu->PC++);
+            BCS(cpu, offset);
+            break;
+        }
+        case 0xF0: { // BEQ RELATIVE
+            int8_t offset = (int8_t)readMemory(memory, cpu->PC++);
+            BEQ(cpu, offset);
+            break;
+        }
+        case 0xD0: { // BNE RELATIVE
+            int8_t offset = (int8_t)readMemory(memory, cpu->PC++);
+            BNE(cpu, offset);
+            break;
+        }
+        case 0x10: { // BPL RELATIVE
+            int8_t offset = (int8_t)readMemory(memory, cpu->PC++);
+            BPL(cpu, offset);
+            break;
+        }
+        case 0x30: { // BMI RELATIVE
+            int8_t offset = (int8_t)readMemory(memory, cpu->PC++);
+            BMI(cpu, offset);
+            break;
+        }
+        case 0x50: { // BVC RELATIVE
+            int8_t offset = (int8_t)readMemory(memory, cpu->PC++);
+            BVC(cpu, offset);
+            break;
+        }
+        case 0x70: { // BVS RELATIVE
+            int8_t offset = (int8_t)readMemory(memory, cpu->PC++);
+            BVS(cpu, offset);
+            break;
+        }
         default:
             printf("No existing opcode here");
             break;
