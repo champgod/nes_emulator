@@ -2,7 +2,7 @@ CC = clang
 CFLAGS = -Wall -Wextra -std=c11
 
 emulator: main.c cpu.c memory.c
-	$(CC) $(CFLAGS) main.c cpu.c memory.c -o emulator
+	$(CC) $(CFLAGS) main.c cpu.c memory.c romloader.c -o emulator
 
 run: emulator
 	./emulator

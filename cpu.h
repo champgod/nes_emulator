@@ -28,6 +28,8 @@ void STX(cpuRegisters* cpu, uint16_t address, Memory* memory); // Stores value o
 void LDY(cpuRegisters* cpu, uint8_t value); // Loads memory value into Y
 void STY(cpuRegisters* cpu, uint16_t address, Memory* memory); // Stores value of Y into the memory address
 
+void LAX(cpuRegisters* cpu, uint8_t value); // Loads memory value into A and X
+
 /* TRANSFER */
 void TAX(cpuRegisters* cpu); // Transfer A to X
 void TXA(cpuRegisters* cpu); // Transfer X to A
@@ -77,8 +79,6 @@ void JSR(cpuRegisters* cpu, Memory* memory, uint16_t address); // Jump to subrou
 void RTS(cpuRegisters* cpu, Memory* memory); // Return from subroutine
 void BRK(cpuRegisters* cpu, Memory* memory); // Break
 void RTI(cpuRegisters* cpu, Memory* memory); // Return from interrupt
-
-
 
 /*STACK*/
 void PHA(cpuRegisters* cpu, Memory* memory); 

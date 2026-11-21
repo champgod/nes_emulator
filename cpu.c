@@ -99,6 +99,12 @@ void STY(cpuRegisters* cpu, uint16_t address, Memory* memory){
    writeMemory(memory, address, cpu->Y);
 }
 
+void LAX(cpuRegisters* cpu, uint8_t value){
+    cpu->X = value;
+    cpu->A = value;
+    updateZN(cpu, value);
+}
+
 /* TRANSFER INSTRUCTION SET */
 void TAX(cpuRegisters* cpu){
     cpu->X = cpu->A;
@@ -1216,6 +1222,67 @@ void cpuStep(cpuRegisters* cpu, Memory* memory){
             BVS(cpu, offset);
             break;
         }
+        case 0xAB: { // LAX IMMEDIATE
+            uint8_t value = immediateAddress(cpu, memory);
+            LAX(cpu, value);
+            break;
+        }
+        case 0xA7: { // LAX ZERO PAGE
+            uint8_t address = zeroPageAddress(cpu, memory);
+            LAX(cpu, readMemory(memory, address));
+            break;    
+        }
+        case 0xB7: { // LAX ZERO PAGE (Y)
+            uint8_t address = zeroPageAddress(cpu, memory);
+            LAX(cpu, readMemory(memory, (uint8_t)(address + cpu->Y)));
+            break;     
+        }
+        case 0xAF: { /// LAX ABSOLUTE
+            uint16_t address = absoluteAddress(cpu, memory);
+            LAX(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xBF: { // LAX ABSOLUTE (Y)
+            uint16_t address = absoluteAddress(cpu, memory);
+            LAX(cpu, readMemory(memory, (uint16_t)(address + cpu->Y)));
+            break;
+        }
+        case 0xA3: { // LAX INDIRECT (X)
+            uint16_t address = indirectAddressX(cpu, memory);
+            LAX(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0xB3: { // LAX INDIRECT (Y)
+            uint16_t address = indirectAddressY(cpu, memory);
+            LAX(cpu, readMemory(memory, address));
+            break;
+        }
+        case 0x04:
+        case 0x44:
+        case 0x64:
+        case 0x14:
+        case 0x34:
+        case 0x54:
+        case 0x74:
+        case 0xD4:
+        case 0xF4:
+        case 0x80:
+        case 0x82:
+        case 0x89:
+        case 0xC2:
+        case 0xE2:
+            cpu->PC++;
+            break;
+
+        case 0x0C:
+        case 0x1C:
+        case 0x3C:
+        case 0x5C:
+        case 0x7C:
+        case 0xDC:
+        case 0xFC:
+            cpu->PC += 2;
+            break;
         default:
             printf("No existing opcode here");
             break;
